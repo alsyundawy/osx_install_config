@@ -101,11 +101,11 @@ getting_network_device_ids() {
     elif [[ "$ETHERNET_DEVICE" == "" ]] && [[ "$HARDWARE_TYPE" == "macbookair" ]]
     then
         ETHERNET_DEVICE="USB 10/100/1000 LAN"
-    elif [[ "$ETHERNET_DEVICE" == "" ]] && [[ "$HARDWARE_TYPE" == "imac" ]]
+    elif [[ "$ETHERNET_DEVICE" == "" ]] && [[ "$HARDWARE_TYPE" == "imac" ]] || [[ "$HARDWARE_TYPE" == "applevirtualmachine1" ]]
     then
-        ETHERNET_DEVICE="Ethernet"
+        ETHERNET_DEVICE="Ethernet" 
     else
-            ETHERNET_DEVICE=$(system_profiler SPNetworkDataType | grep -B2 "Type: Ethernet" | sed 's/^[ \t]*//' | sed 's/\:$//g' | grep -v "^--" | grep -v "^Type:" | sed '/^$/d' | grep -v "Bluetooth" | grep -v "Bridge")
+        ETHERNET_DEVICE=$(system_profiler SPNetworkDataType | grep -B2 "Type: Ethernet" | sed 's/^[ \t]*//' | sed 's/\:$//g' | grep -v "^--" | grep -v "^Type:" | sed '/^$/d' | grep -v "Bluetooth" | grep -v "Bridge")
     fi
     BLUETOOTH_DEVICE=$(system_profiler SPNetworkDataType | grep -B2 "Type: Ethernet" | sed 's/^[ \t]*//' | sed 's/\:$//g' | grep -v "^--" | grep -v "^Type:" | sed '/^$/d' | grep "Bluetooth")
     THUNDERBOLT_BRIDGE_DEVICE=$(system_profiler SPNetworkDataType | grep -B2 "Type: Ethernet" | sed 's/^[ \t]*//' | sed 's/\:$//g' | grep -v "^--" | grep -v "^Type:" | sed '/^$/d' | grep "Bridge")
@@ -200,7 +200,12 @@ create_location_tmp_automatic() {
         :
     fi
     echo ""
-    set_ethernet_priority
+    if [[ "$WLAN_DEVICE" != "" ]] &&  [[ "$ETHERNET_DEVICE" != "" ]]
+    then
+        set_ethernet_priority
+    else
+        :
+    fi
     sleep 2
 }
 
@@ -232,7 +237,12 @@ create_location_automatic() {
         :
     fi
     echo ""
-    set_ethernet_priority
+    if [[ "$WLAN_DEVICE" != "" ]] &&  [[ "$ETHERNET_DEVICE" != "" ]]
+    then
+        set_ethernet_priority
+    else
+        :
+    fi
     sleep 2
 }
 
@@ -315,7 +325,12 @@ create_location_custom() {
         echo '' >> /Users/"$loggedInUser"/Library/Preferences/network_profile_"$loggedInUser".conf
         echo 'ETHERNET_SETUP_COMPLETE="no"' >> /Users/"$loggedInUser"/Library/Preferences/network_profile_"$loggedInUser".conf
     fi
-    set_ethernet_priority
+    if [[ "$WLAN_DEVICE" != "" ]] &&  [[ "$ETHERNET_DEVICE" != "" ]]
+    then
+        set_ethernet_priority
+    else
+        :
+    fi
     sleep 2
 }
 

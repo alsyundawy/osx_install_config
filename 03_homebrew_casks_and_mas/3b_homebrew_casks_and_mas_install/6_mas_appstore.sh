@@ -42,21 +42,21 @@ fi
 ### password
 ###
 
-if [[ "$SUDOPASSWORD" == "" ]]
-then
-    if [[ -e /tmp/tmp_sudo_mas_script_fifo ]]
-    then
-        unset SUDOPASSWORD
-        SUDOPASSWORD=$(cat "/tmp/tmp_sudo_mas_script_fifo" | head -n 1)
-        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
-        env_delete_tmp_sudo_mas_script_fifo
-        #set +a
-    else
-        env_enter_sudo_password
-    fi
-else
-    :
-fi
+#if [[ "$SUDOPASSWORD" == "" ]]
+#then
+#    if [[ -e /tmp/tmp_sudo_mas_script_fifo ]]
+#    then
+#        unset SUDOPASSWORD
+#        SUDOPASSWORD=$(cat "/tmp/tmp_sudo_mas_script_fifo" | head -n 1)
+#        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#        env_delete_tmp_sudo_mas_script_fifo
+#        #set +a
+#    else
+#        env_enter_sudo_password
+#    fi
+#else
+#    :
+#fi
 
 ### appstore password
 if [[ "$MAS_APPSTORE_PASSWORD" != "" ]]
@@ -225,7 +225,7 @@ mas_login_applescript() {
         #tell application "System Events" to tell process "App Store" to set visible to true
     	#delay 1
     	tell application "System Events" to tell process "App Store" to set frontmost to true
-    	delay 2
+    	delay 6
     
         tell application "System Events"
         	tell process "App Store"
@@ -233,22 +233,32 @@ mas_login_applescript() {
         		# to reset delete ASAcknowledgedOnboardingVersion from ~/Library/Preferences/com.apple.AppStore.plist and reboot
         		try
         		   if "$MACOS_VERSION_MAJOR" is equal to "10.14" then
-            		    click button 2 of UI element 1 of sheet 1 of window 1
+                        click button 2 of UI element 1 of sheet 1 of window 1
             		    #click button "Weiter" of UI element 1 of sheet 1 of window 1
                     end if
                     if "$MACOS_VERSION_MAJOR" is equal to "10.15" then
-            		    click button 2 of UI element 1 of sheet 1 of window 1
+                        click button 2 of UI element 1 of sheet 1 of window 1
             		    #click button "Weiter" of UI element 1 of sheet 1 of window 1
                     end if
-                    if "$MACOS_VERSION_MAJOR" greater than or equal to "11" then
+                    if "$MACOS_VERSION_MAJOR" greater than "11" and "$MACOS_VERSION_MAJOR" less than or equal to "14" then
             		    click button 2 of UI element 1 of sheet 1 of window "App Store" 
                     end if
+                    if "$MACOS_VERSION_MAJOR" greater than or equal to "15" then
+                        click button 1 of sheet 1 of window "App Store"
+                    end if
     		    end try
-                delay 8
+                delay 6
                 
-    		    ### on clean install on first run the appstore asks for enabling notifications
+                ### on clean install on first run the appstore asks for enabling notifications
     		    # set before login by adding preferences for app store for notification center
-    		    
+                try
+                    if "$MACOS_VERSION_MAJOR" greater than or equal to "15" then
+                        click button 1 of UI element 3 of sheet 1 of window 1
+                    end if
+    		    end try
+                delay 6
+                
+
     		    ### login
     		    if "$MACOS_VERSION_MAJOR" is equal to "10.14" then
         		    click menu item 15 of menu "Store" of menu bar item "Store" of menu bar 1

@@ -24,21 +24,60 @@ if [[ "$RUN_FROM_BATCH_SCRIPT" == "yes" ]]; then env_start_error_log; else :; fi
 ### asking password upfront
 ###
 
-if [[ "$SUDOPASSWORD" == "" ]]
+#if [[ "$SUDOPASSWORD" == "" ]]
+#then
+#    if [[ -e /tmp/tmp_batch_script_fifo ]]
+#    then
+#        unset SUDOPASSWORD
+#        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+#        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#        env_delete_tmp_batch_script_fifo
+#    else
+#        env_enter_sudo_password
+#        unset -f sudo
+#    fi
+#else
+#    :
+#fi
+
+env_check_keychain_for_password_entry
+if [[ "$SUDO_ENTRY_IN_KEYCHAIN" == "yes" ]]
 then
-    if [[ -e /tmp/tmp_batch_script_fifo ]]
-    then
-        unset SUDOPASSWORD
-        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
-        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
-        env_delete_tmp_batch_script_fifo
-    else
-        env_enter_sudo_password
-        unset -f sudo
-    fi
-else
     :
+else
+    if [[ "$SUDOPASSWORD" == "" ]]
+    then
+        if [[ -e /tmp/tmp_batch_script_fifo ]]
+        then
+            delete_tmp_batch_script_fifo() {
+                if [[ -e "/tmp/tmp_batch_script_fifo" ]]
+                then
+                    rm "/tmp/tmp_batch_script_fifo"
+                else
+                    :
+                fi
+            }
+            unset SUDOPASSWORD
+            SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+            USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+            delete_tmp_batch_script_fifo
+            #set +a
+        else
+            env_enter_sudo_password
+        fi
+    else
+        :
+    fi
+    env_temp_add_sudo_password_to_keychain
 fi
+env_check_for_sudo_askpass_file
+if [[ "$SUDO_ASKPASS_FILE" == "yes" ]]
+then
+    :
+else
+    env_start_sudo_askpass
+fi
+env_sudo_askpass
 
 # replacing sudo command with a function, so all sudo commands of the script do not have to be changed
 # can not be used in untar pipe "| sudo gtar", use start_sudo with env_use_password instead
@@ -54,7 +93,7 @@ fi
 
 if [[ "$RUN_FROM_BATCH_SCRIPT" == "yes" ]]
 then
-    trap_function_exit_middle() { env_stop_sudo; unset GPG_PASSWORD; }
+    trap_function_exit_middle() { unset GPG_PASSWORD; }
 else
     trap_function_exit_middle() { env_stop_sudo; unset GPG_PASSWORD; env_deactivating_caffeinate; }
 fi
@@ -136,7 +175,7 @@ NUMBER_OF_MAX_JOBS=$(echo "$NUMBER_OF_CORES * 1.0" | bc -l)
 NUMBER_OF_MAX_JOBS_ROUNDED=$(awk 'BEGIN { printf("%.0f\n", '"$NUMBER_OF_MAX_JOBS"'); }')
 #echo $NUMBER_OF_MAX_JOBS_ROUNDED
 
-env_start_sudo
+#env_start_sudo
 
 decrypt_and_unarchive_sequential() {
     

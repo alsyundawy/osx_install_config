@@ -53,6 +53,16 @@ check if running after reboot
 	virus scanner plus
 	adguard for safari
 
+### meeting
+
+safari plugins and preferences
+istat menus
+menu bar items and positions
+google analytics
+overflow links
+macpass key
+bl launcher
+
 
 ### iOS (ws & ts)
 

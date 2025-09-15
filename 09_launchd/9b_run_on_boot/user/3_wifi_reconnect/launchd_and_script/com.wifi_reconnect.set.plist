@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wifi_reconnect.set</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>-c</string>
+        <string>/Users/$USER/Library/Scripts/wifi_reconnect.sh</string>
+    </array>
+
+    <key>StartInterval</key>
+    <integer>900</integer> <!-- 900 Sekunden = 15 Minuten -->
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

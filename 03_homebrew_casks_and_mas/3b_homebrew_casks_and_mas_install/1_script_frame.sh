@@ -13,28 +13,68 @@ eval "$(typeset -f env_get_shell_specific_variables)" && env_get_shell_specific_
 ### asking password upfront
 ###
 
-if [[ "$SUDOPASSWORD" != "" ]]
+#if [[ "$SUDOPASSWORD" != "" ]]
+#then
+#    #USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#    :
+#else
+#    if [[ -e /tmp/tmp_batch_script_fifo ]]
+#    then
+#        unset SUDOPASSWORD
+#        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+#        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#        env_delete_tmp_batch_script_fifo
+#    elif [[ -e /tmp/tmp_sudo_mas_script_fifo ]]
+#    then
+#        :
+#    elif [[ -e /tmp/tmp_sudo_cask_script_fifo ]]
+#    then
+#        :
+#    else
+#        env_enter_sudo_password
+#    fi
+#fi
+#
+#env_start_sudo
+
+env_check_keychain_for_password_entry
+if [[ "$SUDO_ENTRY_IN_KEYCHAIN" == "yes" ]]
 then
-    #USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
     :
 else
-    if [[ -e /tmp/tmp_batch_script_fifo ]]
+    if [[ "$SUDOPASSWORD" == "" ]]
     then
-        unset SUDOPASSWORD
-        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
-        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
-        env_delete_tmp_batch_script_fifo
-    elif [[ -e /tmp/tmp_sudo_mas_script_fifo ]]
-    then
-        :
-    elif [[ -e /tmp/tmp_sudo_cask_script_fifo ]]
-    then
-        :
+        if [[ -e /tmp/tmp_batch_script_fifo ]]
+        then
+            delete_tmp_batch_script_fifo() {
+                if [[ -e "/tmp/tmp_batch_script_fifo" ]]
+                then
+                    rm "/tmp/tmp_batch_script_fifo"
+                else
+                    :
+                fi
+            }
+            unset SUDOPASSWORD
+            SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+            USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+            delete_tmp_batch_script_fifo
+            #set +a
+        else
+            env_enter_sudo_password
+        fi
     else
-        env_enter_sudo_password
+        :
     fi
+    env_temp_add_sudo_password_to_keychain
 fi
-
+env_check_for_sudo_askpass_file
+if [[ "$SUDO_ASKPASS_FILE" == "yes" ]]
+then
+    :
+else
+    env_start_sudo_askpass
+fi
+env_sudo_askpass
 
 # redefining sudo so it is possible to run homebrew install without entering the password again
 #env_sudo_homebrew
@@ -71,7 +111,7 @@ then
     # script is not session master and run from another script (S+ on mac and linux)
     # deleting of fifos added in the separate scripts
     # do not kill ruby here as formulae, caks and mas run parallel if using run_all
-    trap_function_exit_middle() { env_stop_sudo; stty sane; unset SUDOPASSWORD; unset USE_PASSWORD; }
+    trap_function_exit_middle() { stty sane; unset SUDOPASSWORD; unset USE_PASSWORD; }
     trap_function_exit_end() { :; }
 else
     # script is session master and not run from another script (S on mac Ss on linux)

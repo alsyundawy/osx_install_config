@@ -51,24 +51,63 @@ env_check_for_user_profile
 ### password
 ###
 
-if [[ "$SUDOPASSWORD" == "" ]]
-then
-    if [[ -e /tmp/tmp_sudo_cask_script_fifo ]]
-    then
-        unset SUDOPASSWORD
-        SUDOPASSWORD=$(cat "/tmp/tmp_sudo_cask_script_fifo" | head -n 1)
-        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
-        env_delete_tmp_casks_script_fifo
-        #set +a
-        :
-    else
-        env_enter_sudo_password
-    fi
-else
-    :
-fi
+#env_check_keychain_for_password_entry
+#if [[ "$SUDO_ENTRY_IN_KEYCHAIN" == "yes" ]]
+#then
+#    :
+#else
+#    if [[ "$SUDOPASSWORD" == "" ]]
+#    then
+#        if [[ -e /tmp/tmp_sudo_cask_script_fifo ]]
+#        then
+#            delete_tmp_sudo_cask_script_fifo() {
+#                if [[ -e "/tmp/tmp_sudo_cask_script_fifo" ]]
+#                then
+#                    rm "/tmp/tmp_sudo_cask_script_fifo"
+#                else
+#                    :
+#                fi
+#            }
+#            unset SUDOPASSWORD
+#            SUDOPASSWORD=$(cat "/tmp/tmp_sudo_cask_script_fifo" | head -n 1)
+#            USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#            delete_tmp_sudo_cask_script_fifo
+#            #set +a
+#        else
+#            env_enter_sudo_password
+#        fi
+#    else
+#        :
+#    fi
+#    env_temp_add_sudo_password_to_keychain
+#fi
+#env_check_for_sudo_askpass_file
+#if [[ "$SUDO_ASKPASS_FILE" == "yes" ]]
+#then
+#    :
+#else
+#    env_start_sudo_askpass
+#fi
+#env_sudo_askpass
 
-env_sudo
+#if [[ "$SUDOPASSWORD" == "" ]]
+#then
+#    if [[ -e /tmp/tmp_sudo_cask_script_fifo ]]
+#    then
+#        unset SUDOPASSWORD
+#        SUDOPASSWORD=$(cat "/tmp/tmp_sudo_cask_script_fifo" | head -n 1)
+#        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#        env_delete_tmp_casks_script_fifo
+#        #set +a
+#        :
+#    else
+#        env_enter_sudo_password
+#    fi
+#else
+#    :
+#fi
+#
+#env_sudo
 
 
 
@@ -238,7 +277,7 @@ env_check_if_parallel_is_installed
 
 
 ### starting sudo
-env_start_sudo
+#env_start_sudo
 
 
 ###

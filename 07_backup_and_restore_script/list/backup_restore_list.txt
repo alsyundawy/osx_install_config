@@ -374,15 +374,16 @@ u	~/Library/Preferences/com.DigiDNA.SharedPreferences.plist
 echo iStat Menus
 #u	"$PATH_TO_APPS"/iStat Menus.app
 u	~/Library/Preferences/com.bjango.istatmenus.plist
-u	~/Library/Preferences/com.bjango.istatmenus6.extras.plist
+u	~/Library/Preferences/com.bjango.istatmenus.menubar.7.plist
 #u	~/Library/Preferences/com.iSlayer.iStatMenusPreferences.plist
 u	~/Library/LaunchAgents/com.bjango.istatmenus.agent.plist
 u	~/Library/LaunchAgents/com.bjango.istatmenus.status.plist
-u	/Library/Application Support/iStat Menus 6
+u	~/Library/Application Support/iStat Menus 7/
 u	/Library/PrivilegedHelperTools/com.bjango.istatmenus.installerhelper
 u	/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist
 u	/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist
 u	/Library/LaunchDaemons/com.bjango.istatmenus.installerhelper.plist
+u	/Library/LaunchDaemons/com.bjango.istatmenus.installer.plist
 
 # iTerm
 echo iTerm
@@ -498,10 +499,10 @@ u	~/Library/Group Containers/UBF8T346G9.Office
 # relinking ~/Library/Group Containers/UBF8T346G9.Office/MicrosoftRegistrationDB.reg is done in 11k_third_party_app_preferences.sh
 
 # MonKey Office
-echo MonKey Office 2023
-u	"$PATH_TO_APPS"/MonKey Office 2023.app
+echo MonKey Office
+u	"$PATH_TO_APPS"/MonKey Office 2025.app
 u	~/Library/Application Support/ProSaldo
-#u	~/Library/Preferences/com.prosaldo.monkeyoffice2023.plist
+#u	~/Library/Preferences/com.prosaldo.monkeyoffice2025.plist
 
 # muCommander
 echo muCommander
@@ -618,7 +619,7 @@ echo Printers
 u 	~/.cups/lpoptions
 u	~/Library/Printers/
 u	~/Library/Preferences/com.apple.print.custompresets.forprinter.canon_ir_adv_c3325if.plist
-u	~/Library/Preferences/com.apple.print.custompresets.forprinter.canon_ir_adv_dx_c3926i.plist
+u	~/Library/Preferences/com.apple.print.custompresets.forprinter.canon_ir_adv_xd_c3926i.plist
 #u	~/Library/Preferences/com.apple.print.custompapers.plist
 u	/etc/cups/ppd/canon_ir_adv_c3325if.ppd
 u	/etc/cups/ppd/canon_ir_adv_dx_c3926i.ppd
@@ -930,7 +931,14 @@ u	~/Library/Preferences/com.xnview.XnConvert.plist
 #u	~/Library/Preferences/com.trankynam.XtraFinder.plist
 
 
-
+### appstore apps installed when testing as apple does not allow login to appstore in utm vm
+#u	"$PATH_TO_APPS"/AdGuard for Safari.app
+#u	"$PATH_TO_APPS"/Command X.app
+#u	"$PATH_TO_APPS"/WireGuard.app
+#u	"$PATH_TO_APPS"/Overflow 3.app
+#u	"$PATH_TO_APPS"/Telephone.app
+#u	"$PATH_TO_APPS"/Super Agent.app
+#u	"$PATH_TO_APPS"/Virus Scanner Plus.app
 
 
 

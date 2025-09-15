@@ -13,7 +13,7 @@ alfred
 angry-ip-scanner
 #anydesk
 appcleaner
-bartender
+#bartender
 bbedit
 bettertouchtool
 #brackets
@@ -29,6 +29,7 @@ eloston-chromium
 #flash-npapi
 firefox
 geburtstagschecker
+#google-analytics-opt-out		# does not work with safari
 google-earth-pro
 #google-earth-web-plugin
 handbrake
@@ -41,6 +42,7 @@ istat-menus
 iterm2
 jameica
 jitsi-meet
+jordanbaird-ice
 keepingyouawake
 keka
 linphone
@@ -70,7 +72,7 @@ textmate
 the-archive-browser
 the-unarchiver
 #timer
-tnefs-enough
+#tnefs-enough			# done from appstore
 #ui-browser
 unified-remote
 utm
@@ -83,6 +85,22 @@ vox			# alternative: tiny-player
 whatsapp
 witch
 xnconvert
+
+### appstore apps installed when testing as apple does not allow login to appstore in utm vm
+#affinity-designer
+#affinity-photo
+#affinity-publisher
+#microsoft-word
+#microsoft-powerpoint
+#microsoft-excel
+#command-x
+#wireguard
+#AdGuard for Safari
+#overflow
+#Telephone
+
+
+
 
 # no longer installable by cask, installed with separate install script
 # correct name in uppercase and lowercase letters is needed

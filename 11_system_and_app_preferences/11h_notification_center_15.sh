@@ -112,6 +112,8 @@ APPLICATIONS_TO_SET_NOTIFICATIONS=(
 "Chromium																41943375"
 "App Store																41943375"
 #"System Settings														41943375"
+"Ice  													                41943375"
+"BetterTouchTool  													    41943375"
 )
 
 

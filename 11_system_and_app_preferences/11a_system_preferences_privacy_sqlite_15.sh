@@ -299,6 +299,7 @@ ACCESSIBILITYAPPS=(
 "run_on_login_virusscannerplus                                       kTCCServiceAccessibility           1"
 "BetterTouchTool                                                     kTCCServiceAccessibility           1"
 "Command X                                                           kTCCServiceAccessibility           1"
+"Ice                                                                 kTCCServiceAccessibility           1"
 )
 
 APPS_SECURITY_ARRAY=$(printf "%s\n" "${ACCESSIBILITYAPPS[@]}")
@@ -415,6 +416,7 @@ SCREENCAPTUREAPPS=(
 "TeamViewer                                 kTCCServiceScreenCapture                                    1"
 "Jitsi Meet                                 kTCCServiceScreenCapture                                    1"
 "Microsoft Teams                            kTCCServiceScreenCapture                                    1"
+"Ice                                        kTCCServiceScreenCapture                                    1"
 )
 
 APPS_SECURITY_ARRAY=$(printf "%s\n" "${SCREENCAPTUREAPPS[@]}")
@@ -465,6 +467,7 @@ sqlite3 "$DATABASE_USER" "delete from access where service='kTCCServiceBluetooth
 MICROPHONEAPPS=(
 # app name								    security service										    allowed (1=yes, 0=no)
 "Stats                                      kTCCServiceBluetoothAlways                                  0"
+"BetterTouchTool                            kTCCServiceBluetoothAlways                                  0"
 )
 
 APPS_SECURITY_ARRAY=$(printf "%s\n" "${MICROPHONEAPPS[@]}")

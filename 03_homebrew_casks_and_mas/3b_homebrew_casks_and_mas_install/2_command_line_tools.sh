@@ -48,7 +48,7 @@ if [[ "$RUN_FROM_BATCH_SCRIPT" == "yes" ]]; then env_start_error_log; else :; fi
 ###
 
 ### starting sudo
-env_start_sudo
+#env_start_sudo
     
 # installing command line tools (graphical)
 command_line_tools_install_gui() {
@@ -125,7 +125,7 @@ echo ''
 
 
 ### stopping sudo
-env_stop_sudo
+#env_stop_sudo
 
 
 ### stopping the error output redirecting

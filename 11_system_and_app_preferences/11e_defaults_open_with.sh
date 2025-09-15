@@ -96,6 +96,8 @@ default_open_with=(
 "LSHandlerContentType           public.php-script                           com.coteditor.coteditor"        # .php
 "LSHandlerContentType           public.css                                  com.coteditor.coteditor"        # .css
 "LSHandlerContentType           public.yaml                                 com.coteditor.coteditor"        # .css
+"LSHandlerContentType           public.python-script                        com.coteditor.coteditor"        # .py
+"LSHandlerContentTagClass       public.filename-extension                   com.coteditor.coteditor LSHandlerContentTag     pyx"       # .pyx
 "LSHandlerContentTagClass       public.filename-extension                   com.coteditor.coteditor LSHandlerContentTag     conf"       # .conf
 "LSHandlerContentTagClass       public.filename-extension                   com.coteditor.coteditor LSHandlerContentTag     env"       # .conf
 "LSHandlerContentType           com.adobe.pdf                               com.apple.preview"              # .pdf

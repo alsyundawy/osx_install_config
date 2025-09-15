@@ -64,7 +64,7 @@ env_check_if_parallel_is_installed
 
 
 ### starting sudo
-env_start_sudo
+#env_start_sudo
 
 # installing homebrew formulae
 #echo ''

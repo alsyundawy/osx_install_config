@@ -47,7 +47,8 @@ env_command_line_tools_install_shell
 
 
 ### starting sudo
-env_start_sudo
+#env_start_sudo
+#env_sudo_askpass
 
 # use xcode if installed
 if [[ -e "/Applications/Xcode-beta.app" ]]

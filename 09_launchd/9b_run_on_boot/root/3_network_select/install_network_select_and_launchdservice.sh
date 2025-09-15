@@ -195,6 +195,15 @@ wait
 #open "$LOGFILE"
 
 
+### stay online
+AUTOMATIC_LOCATION="automatic"
+echo ''
+echo "changing to location "$AUTOMATIC_LOCATION"..."
+sudo networksetup -switchtolocation "$AUTOMATIC_LOCATION" &>/dev/null
+sleep 2
+echo ''
+
+
 ### stopping the error output redirecting
 if [[ "$RUN_FROM_BATCH_SCRIPT" == "yes" ]]; then env_stop_error_log; else :; fi
 

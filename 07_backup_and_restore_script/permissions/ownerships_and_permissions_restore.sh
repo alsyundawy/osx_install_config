@@ -22,27 +22,29 @@ else
     :
 fi
 
-if [[ "$SUDOPASSWORD" == "" ]]
-then
-    ### asking password upfront
-    env_enter_sudo_password
+#if [[ "$SUDOPASSWORD" == "" ]]
+#then
+#    ### asking password upfront
+#    env_enter_sudo_password
+#
+#    # unset password if script is run seperately
+#    UNSET_PASSWORD="YES"
+#    
+#    ### trapping
+#    trap_function_exit_middle() { env_stop_sudo; unset SUDOPASSWORD; unset USE_PASSWORD; }
+#    "${ENV_SET_TRAP_SIG[@]}"
+#    "${ENV_SET_TRAP_EXIT[@]}"
+#else
+#    #echo "SELECTEDUSER is $SELECTEDUSER"
+#    :
+#fi
+#
+#env_start_sudo
 
-    # unset password if script is run seperately
-    UNSET_PASSWORD="YES"
-    
-    ### trapping
-    trap_function_exit_middle() { env_stop_sudo; unset SUDOPASSWORD; unset USE_PASSWORD; }
-    "${ENV_SET_TRAP_SIG[@]}"
-    "${ENV_SET_TRAP_EXIT[@]}"
-else
-    #echo "SELECTEDUSER is $SELECTEDUSER"
-    :
-fi
+env_sudo_askpass
 
 HOMEFOLDER=/Users/"$SELECTEDUSER"
 #echo "HOMEFOLDER before function is "$HOMEFOLDER""
-
-env_start_sudo
 
 # starting a function to tee a record to a logfile
 backup_restore_permissions() {
@@ -252,11 +254,12 @@ backup_restore_permissions() {
     if [[ -e "$FILE_OR_FOLDER_TO_CHECK_FOR" ]] 
     then
         #sudo chmod -R 755 "/Library/Application Support/iStat Menus 6"
-        sudo chown -R root:wheel "/Library/Application Support/iStat Menus 6"
-    	sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist"
-    	sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist"
-    	sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.installerhelper.plist"
-    	sudo chown root:wheel "/Library/PrivilegedHelperTools/com.bjango.istatmenus.installerhelper"
+        #sudo chown -R root:wheel "/Library/Application Support/iStat Menus 7"
+    	#sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist"
+    	#sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist"
+    	#sudo chown root:wheel "/Library/LaunchDaemons/com.bjango.istatmenus.installerhelper.plist"
+    	#sudo chown root:wheel "/Library/PrivilegedHelperTools/com.bjango.istatmenus.installerhelper"
+    	sudo chown root:wheel /Library/LaunchDaemons/com.bjango.istatmenus.installer.plist
     else
         echo ''
         echo ""$FILE_OR_FOLDER_TO_CHECK_FOR" not found, skipping setting permissions..." >&2

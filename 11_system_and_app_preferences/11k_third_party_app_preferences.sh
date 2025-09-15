@@ -33,21 +33,60 @@ env_check_for_user_profile
 ### asking password upfront
 ###
 
-if [[ "$SUDOPASSWORD" == "" ]]
+#if [[ "$SUDOPASSWORD" == "" ]]
+#then
+#    if [[ -e /tmp/tmp_batch_script_fifo ]]
+#    then
+#        unset SUDOPASSWORD
+#        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+#        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+#        env_delete_tmp_batch_script_fifo
+#        env_sudo
+#    else
+#        env_enter_sudo_password
+#    fi
+#else
+#    :
+#fi
+
+env_check_keychain_for_password_entry
+if [[ "$SUDO_ENTRY_IN_KEYCHAIN" == "yes" ]]
 then
-    if [[ -e /tmp/tmp_batch_script_fifo ]]
-    then
-        unset SUDOPASSWORD
-        SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
-        USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
-        env_delete_tmp_batch_script_fifo
-        env_sudo
-    else
-        env_enter_sudo_password
-    fi
-else
     :
+else
+    if [[ "$SUDOPASSWORD" == "" ]]
+    then
+        if [[ -e /tmp/tmp_batch_script_fifo ]]
+        then
+            delete_tmp_batch_script_fifo() {
+                if [[ -e "/tmp/tmp_batch_script_fifo" ]]
+                then
+                    rm "/tmp/tmp_batch_script_fifo"
+                else
+                    :
+                fi
+            }
+            unset SUDOPASSWORD
+            SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+            USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+            delete_tmp_batch_script_fifo
+            #set +a
+        else
+            env_enter_sudo_password
+        fi
+    else
+        :
+    fi
+    env_temp_add_sudo_password_to_keychain
 fi
+env_check_for_sudo_askpass_file
+if [[ "$SUDO_ASKPASS_FILE" == "yes" ]]
+then
+    :
+else
+    env_start_sudo_askpass
+fi
+env_sudo_askpass
 
 
 ###
@@ -206,9 +245,9 @@ then
     cp -a "$PATH_TO_SYSTEM_APPS"/Utilities/Terminal.app/Contents/Resources/Fonts/* /Users/"$USER"/Library/Fonts/
     
     # set it in iterm2
-    /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Normal Font" "SFMono-Regular 11"'
-    /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Horizontal Spacing" 1'
-    /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Vertical Spacing" 1'
+    sudo /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Normal Font" "SFMono-Regular 11"'
+    sudo /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Horizontal Spacing" 1'
+    sudo /usr/libexec/PlistBuddy ~/Library/Preferences/com.googlecode.iterm2.plist -c 'Set "New Bookmarks":1:"Vertical Spacing" 1'
     
     # paste of a lot of commands does only work in iterm2 when editing / lowering default paste speed
     defaults write com.googlecode.iterm2 QuickPasteBytesPerCall -int 83
@@ -280,21 +319,21 @@ then
 	launchctl bootstrap gui/"$(id -u "$USER")" "/Users/"$USER"/Library/LaunchAgents/com.bjango.istatmenus.status.plist" 2>&1 | grep -v "in progress" | grep -v "already bootstrapped"
 	sleep 3
 	
-	#launchctl print-disabled system
-	#launchctl print system | grep com.bjango.
-	sudo launchctl bootout system "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist" 2>&1 | grep -v "in progress" | grep -v "No such process"
-	#sudo launchctl kill 15 system/com.bjango.istatmenus.fans
-	sleep 3
-	sudo launchctl enable system/com.bjango.istatmenus.fans
-	sudo launchctl bootstrap system "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist" 2>&1 | grep -v "in progress" | grep -v "already bootstrapped"
-	sleep 3
-	
-	sudo launchctl bootout system "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist" 2>&1 | grep -v "in progress" | grep -v "No such process"
-	#sudo launchctl kill 15 system/com.bjango.istatmenus.daemon
-	sleep 3
-	sudo launchctl enable system/com.bjango.istatmenus.daemon
-	sudo launchctl bootstrap system "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist" 2>&1 | grep -v "in progress" | grep -v "already bootstrapped"
-	sleep 3
+#	#launchctl print-disabled system
+#	#launchctl print system | grep com.bjango.
+#	sudo launchctl bootout system "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist" 2>&1 | grep -v "in progress" | grep -v "No such process"
+#	#sudo launchctl kill 15 system/com.bjango.istatmenus.fans
+#	sleep 3
+#	sudo launchctl enable system/com.bjango.istatmenus.fans
+#	sudo launchctl bootstrap system "/Library/LaunchDaemons/com.bjango.istatmenus.fans.plist" 2>&1 | grep -v "in progress" | grep -v "already bootstrapped"
+#	sleep 3
+#	
+#	sudo launchctl bootout system "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist" 2>&1 | grep -v "in progress" | grep -v "No such process"
+#	#sudo launchctl kill 15 system/com.bjango.istatmenus.daemon
+#	sleep 3
+#	sudo launchctl enable system/com.bjango.istatmenus.daemon
+#	sudo launchctl bootstrap system "/Library/LaunchDaemons/com.bjango.istatmenus.daemon.plist" 2>&1 | grep -v "in progress" | grep -v "already bootstrapped"
+#	sleep 3
 	
 	#sudo launchctl bootout system "/Library/LaunchDaemons/com.bjango.istatmenus.installerhelper.plist" 2>&1 | grep -v "in progress" | grep -v "No such process"
 	#sudo launchctl kill 15 system/com.bjango.istatmenus.installerhelper

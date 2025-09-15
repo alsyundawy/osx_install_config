@@ -546,7 +546,7 @@ setting_preferences() {
     # adding startup-items
     AUTOSTART_ITEMS_ALL_USERS=(
     # name													                  start hidden
-    "Bartender 5                                                              false"
+    #"Bartender 5                                                              false"
     "AudioSwitcher                                                            false"   
     "KeepingYouAwake                                                          false" 
     "Alfred 5                                                                 false" 
@@ -567,6 +567,7 @@ setting_preferences() {
     "Command X                                                                 true"
     #"Signal                                                                 true"
     #"Whatsapp                                                                 true"
+    "Ice                                                                       true"
     )
     AUTOSTART_ITEMS=$(printf "%s\n" "${AUTOSTART_ITEMS_ALL_USERS[@]}")
     env_add_startup_items

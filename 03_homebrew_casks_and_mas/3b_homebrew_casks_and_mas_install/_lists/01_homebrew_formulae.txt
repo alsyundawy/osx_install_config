@@ -20,3 +20,4 @@ macosvpn	# network script
 #node		# npm command
 wakeonlan	# send magic packet to wake devices over lan
 wget		# dial snom phone
+rsync		# macos as of 2025-05 ships with version 2.6.9 (very old with bugs)

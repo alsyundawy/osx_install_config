@@ -63,14 +63,55 @@ env_check_for_user_profile
 ### asking password upfront
 ###
 
-echo ''
-printf "\n${bold_text}###\nsudo password...\n###\n${default_text}"
-echo ''
-echo "please enter sudo password..."
-env_enter_sudo_password
+#echo ''
+#printf "\n${bold_text}###\nsudo password...\n###\n${default_text}"
+#echo ''
+#echo "please enter sudo password..."
+#env_enter_sudo_password
 #env_start_sudo
 
 # env_delete_tmp_batch_script_fifo and env_delete_tmp_batch_script_gpg_fifo are part of config file
+
+env_stop_sudo
+env_check_keychain_for_password_entry
+if [[ "$SUDO_ENTRY_IN_KEYCHAIN" == "yes" ]]
+then
+    :
+else
+    if [[ "$SUDOPASSWORD" == "" ]]
+    then
+        if [[ -e /tmp/tmp_batch_script_fifo ]]
+        then
+            delete_tmp_batch_script_fifo() {
+                if [[ -e "/tmp/tmp_batch_script_fifo" ]]
+                then
+                    rm "/tmp/tmp_batch_script_fifo"
+                else
+                    :
+                fi
+            }
+            unset SUDOPASSWORD
+            SUDOPASSWORD=$(cat "/tmp/tmp_batch_script_fifo" | head -n 1)
+            USE_PASSWORD='builtin printf '"$SUDOPASSWORD\n"''
+            delete_tmp_batch_script_fifo
+            #set +a
+        else
+            env_enter_sudo_password
+        fi
+    else
+        :
+    fi
+    env_temp_add_sudo_password_to_keychain
+fi
+env_check_for_sudo_askpass_file
+if [[ "$SUDO_ASKPASS_FILE" == "yes" ]]
+then
+    :
+else
+    env_start_sudo_askpass
+fi
+env_sudo_askpass
+
 
 
 ###
@@ -107,7 +148,7 @@ env_activating_caffeinate
 ### trap
 ###
 
-trap_function_exit_middle() { env_delete_tmp_batch_script_fifo; env_delete_tmp_batch_script_gpg_fifo; env_delete_tmp_sudo_mas_script_fifo; env_delete_tmp_appstore_mas_script_fifo; unset SUDOPASSWORD; unset USE_PASSWORD; env_deactivating_caffeinate; rm -f "/tmp/batch_script_in_progress" }
+trap_function_exit_middle() { env_delete_tmp_batch_script_fifo; env_delete_tmp_batch_script_gpg_fifo; env_delete_tmp_sudo_mas_script_fifo; env_delete_tmp_appstore_mas_script_fifo; rm -f "/tmp/batch_script_in_progress"; env_stop_sudo; unset SUDOPASSWORD; unset USE_PASSWORD; env_deactivating_caffeinate }
 "${ENV_SET_TRAP_SIG[@]}"
 "${ENV_SET_TRAP_EXIT[@]}"
 

@@ -86,35 +86,45 @@ fi
 # newer version here
 # https://github.com/Tatsh/mysides
 
-echo ''
-if [[ $(uname -m | grep arm) != "" ]]
+#echo ''
+#if [[ $(uname -m | grep arm) != "" ]]
+#then
+#	# arm mac
+#	if command -v $(brew --prefix)/bin/python3 &> /dev/null
+#    then
+#        # installed
+#        echo "python3 is installed via homebrew..."
+#    else
+#        # not installed
+#        echo "python3 is not installed via homebrew, downloading via homebrew..."
+#        brew install --formula --force python3
+#	fi
+##	PYTHON_VERSION="$(brew --prefix)/bin/python3"
+##    PIP_VERSION="$(brew --prefix)/bin/pip3"
+##	echo "installing finder-sidebar-editor..."
+##	"${PIP_VERSION}" install finder-sidebar-editor
+##	"${PIP_VERSION}" install pip-autoremove
+#else
+#	# intel mac
+#    if command -v mysides &> /dev/null
+#    then
+#        # installed
+#        echo "mysides is installed..."
+#    else
+#        # not installed
+#        echo "mysides is not installed, downloading via homebrew..."
+#        brew install --cask --force mysides
+#    fi
+#fi
+
+if command -v $(brew --prefix)/bin/python3 &> /dev/null
 then
-	# arm mac
-	if command -v $(brew --prefix)/bin/python3 &> /dev/null
-    then
-        # installed
-        echo "python3 is installed via homebrew..."
-    else
-        # not installed
-        echo "python3 is not installed via homebrew, downloading via homebrew..."
-        brew install --formula --force python3
-	fi
-	PYTHON_VERSION="$(brew --prefix)/bin/python3"
-    PIP_VERSION="$(brew --prefix)/bin/pip3"
-	echo "installing finder-sidebar-editor..."
-	"${PIP_VERSION}" install finder-sidebar-editor
-	"${PIP_VERSION}" install pip-autoremove
+    # installed
+    echo "python3 is installed via homebrew..."
 else
-	# intel mac
-    if command -v mysides &> /dev/null
-    then
-        # installed
-        echo "mysides is installed..."
-    else
-        # not installed
-        echo "mysides is not installed, downloading via homebrew..."
-        brew install --cask --force mysides
-    fi
+    # not installed
+    echo "python3 is not installed via homebrew, downloading via homebrew..."
+    brew install --formula --force python3
 fi
 
 
@@ -157,26 +167,19 @@ echo "clearing and setting finder sidebar items..."
 #	:
 #fi
 
-if [[ $(uname -m | grep arm) != "" ]]
-then
-	# arm mac
-    PYTHON_CODE=$(cat <<EOF
-# python code start
-from finder_sidebar_editor import FinderSidebar                # Import the module
-sidebar = FinderSidebar()                                      # Create a Finder sidebar instance to act on.
-sidebar.remove_all()
+#if [[ $(uname -m | grep arm) != "" ]]
+#then
+#	# arm mac
+#    "$SCRIPT_DIR"/"11f_finder_sidebar_python_wrapper.sh"
+#
+#else
+#	# intel mac
+#	mysides remove all
+#fi
 
-# python code end
-EOF
-)
-    "${PYTHON_VERSION}" -c "$PYTHON_CODE"
+"$SCRIPT_DIR"/"11f_finder_sidebar_python_wrapper.sh"
 
-else
-	# intel mac
-	mysides remove all
-fi
-
-if [[ $(defaults read MobileMeAccounts Accounts | grep AccountID | cut -d \" -f2 | grep "does not exist") == "" ]]
+if [[ $(defaults read MobileMeAccounts Accounts) ]] && [[ $(defaults read MobileMeAccounts Accounts | grep AccountID | cut -d \" -f2 | grep "does not exist") == "" ]]
 then
     # icloud account exists
     
